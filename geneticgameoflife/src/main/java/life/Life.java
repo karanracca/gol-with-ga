@@ -1,5 +1,6 @@
 package life;
 
+import ga.DNA;
 import util.Util;
 
 import javax.swing.*;
@@ -14,6 +15,10 @@ import java.util.Random;
 public class Life extends Canvas {
 
     private static final long serialVersionUID = 1L;
+    private static final int MAX_ALIVE = 90;
+    private static final int MIN_ALIVE = 0;
+    private static final int SPEED = 1;
+
     private int frameSize;
     private int gridSize;
     public static String title = "Game Of Life";
@@ -24,6 +29,7 @@ public class Life extends Canvas {
     private boolean[] cGrid;
     private boolean[] pGrid;
     private int generation;
+    private int livingCells;
     private boolean continueGame;
     private ArrayList history;
     private JFrame frame;
@@ -40,33 +46,43 @@ public class Life extends Canvas {
 
     private void initiateGame() {
         this.generation = 0;
+        this.livingCells = 0;
         this.continueGame = true;
         history = new ArrayList<boolean[]>();
         image = new BufferedImage(gridSize, gridSize, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
     }
 
-    public void start(boolean initialPattern[]) {
+    public void start(DNA dna) {
         cGrid = new boolean[pixels.length];
         pGrid = new boolean[pixels.length];
-        if (null == initialPattern) {
+        if (null == dna) {
             for (int i = 0; i < cGrid.length; i++) {
                 cGrid[i] = random.nextInt(100) / 100.0 > 0.8;
             }
+        } else {
+            cGrid = Arrays.copyOf(dna.getGrid(), dna.getGrid().length);
         }
-        this.run();
+        boolean finalGrid[] = this.run();
+        dna.setFinalGrid(finalGrid);
     }
 
-    public void run() {
+    public boolean[] run() {
         while (continueGame) {
             update();
             try {
-                Thread.sleep(1);
+                if(generation == 1) {
+//                    Thread.sleep(1000);
+                } else {
+                    Thread.sleep(SPEED);
+                }
             } catch (Exception e) {
 
             }
             render();
         }
+
+        return cGrid;
 //        System.out.println("Last Generation: " + generation);
     }
 
@@ -107,15 +123,18 @@ public class Life extends Canvas {
         for (int i = 0; i < pixels.length; i++) {
             pixels[i] = cGrid[i] ? 0xffffff : 0;
         }
+
         g.drawImage(image, 0, 0, frameSize, frameSize, null);
         g.dispose();
         bs.show();
         generation++;
+        livingCells += getLiveCellCount();
 
         history.add(Arrays.copyOf(cGrid, cGrid.length));
     }
 
-    public int startGame(boolean initialPattern[]) {
+    public void startGame(DNA dna) {
+        double fitness;
         this.initiateGame();
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
@@ -126,8 +145,9 @@ public class Life extends Canvas {
 
         frame.add(this);
         frame.pack();
-        this.start(initialPattern);
-        return this.generation;
+        this.start(dna);
+        fitness = (double)livingCells / generation;
+        dna.setFitness((int)fitness);
     }
 
 
@@ -152,7 +172,8 @@ public class Life extends Canvas {
         if (generation > 10) {
             int totalLiveCells = getLiveCellCount();
             double percentAlive = (((double) totalLiveCells) / (gridSize * gridSize)) * 100;
-            if (percentAlive > 90 || percentAlive < 5) {
+            if (percentAlive > MAX_ALIVE || percentAlive < MIN_ALIVE) {
+//                System.out.println("Terminated due to population problem: " + percentAlive + "%");
                 this.continueGame = false;
                 return;
             }
@@ -160,6 +181,7 @@ public class Life extends Canvas {
         for (int i = 0; i < history.size(); i++) {
             match = (boolean[]) history.get(i);
             if (Arrays.equals(cGrid, match)) {
+//                System.out.println("Terminated due to repeated pattern");
                 contains = true;
                 break;
             }
