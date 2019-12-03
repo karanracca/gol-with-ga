@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a195cb4d-df79-45f1-9c1e-2d706706c3fa" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ga/GA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ga/GA.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/life/Life.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/life/Life.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/geneticgameoflife.kotlin_module" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -18,11 +16,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/life/Life.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2216">
-              <caret line="145" column="24" lean-forward="true" selection-start-line="145" selection-start-column="24" selection-end-line="145" selection-end-column="24" />
+            <state relative-caret-position="153">
+              <caret line="18" column="47" selection-start-line="18" selection-start-column="47" selection-end-line="18" selection-end-column="47" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -30,14 +28,14 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/ga/GA.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
-              <caret line="35" selection-start-line="35" selection-end-line="35" />
+            <state relative-caret-position="221">
+              <caret line="22" column="43" selection-start-line="22" selection-start-column="43" selection-end-line="22" selection-end-column="43" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1854#1868#0" expanded="true" />
+                <element signature="e#3933#3947#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -187,7 +185,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1575348732706" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1575354596325" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -250,12 +248,12 @@
       <option name="presentableId" value="Default" />
       <updated>1574792550221</updated>
       <workItem from="1574792555125" duration="34541000" />
-      <workItem from="1575318340844" duration="27936000" />
+      <workItem from="1575318340844" duration="33569000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="62477000" />
+    <option name="totallyTimeSpent" value="68110000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
@@ -268,6 +266,7 @@
       <window_info id="UI Designer" order="4" />
       <window_info id="Capture Tool" order="5" />
       <window_info id="Favorites" order="6" side_tool="true" />
+      <window_info anchor="bottom" id="Duplicate detector" weight="0.3290461" />
       <window_info anchor="bottom" id="Inspection Results" weight="0.3290461" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3290461" />
@@ -347,23 +346,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/ga/Population.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="20" column="27" selection-start-line="20" selection-start-column="27" selection-end-line="20" selection-end-column="27" />
-          <folding>
-            <element signature="e#126#127#0" expanded="true" />
-            <element signature="e#173#174#0" expanded="true" />
-            <element signature="e#213#214#0" expanded="true" />
-            <element signature="e#240#241#0" expanded="true" />
-            <element signature="e#288#289#0" expanded="true" />
-            <element signature="e#320#321#0" expanded="true" />
-            <element signature="e#356#357#0" expanded="true" />
-            <element signature="e#375#376#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/ga/DNA.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="429">
@@ -385,23 +367,40 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/ga/GA.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/ga/Population.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="35" selection-start-line="35" selection-end-line="35" />
+        <state relative-caret-position="340">
+          <caret line="20" column="27" selection-start-line="20" selection-start-column="27" selection-end-line="20" selection-end-column="27" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1854#1868#0" expanded="true" />
+            <element signature="e#126#127#0" expanded="true" />
+            <element signature="e#173#174#0" expanded="true" />
+            <element signature="e#213#214#0" expanded="true" />
+            <element signature="e#240#241#0" expanded="true" />
+            <element signature="e#288#289#0" expanded="true" />
+            <element signature="e#320#321#0" expanded="true" />
+            <element signature="e#356#357#0" expanded="true" />
+            <element signature="e#375#376#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/life/Life.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2216">
-          <caret line="145" column="24" lean-forward="true" selection-start-line="145" selection-start-column="24" selection-end-line="145" selection-end-column="24" />
+        <state relative-caret-position="153">
+          <caret line="18" column="47" selection-start-line="18" selection-start-column="47" selection-end-line="18" selection-end-column="47" />
           <folding>
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/ga/GA.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="22" column="43" selection-start-line="22" selection-start-column="43" selection-end-line="22" selection-end-column="43" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3933#3947#0" expanded="true" />
           </folding>
         </state>
       </provider>

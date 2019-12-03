@@ -16,8 +16,8 @@ public class Life extends Canvas {
 
     private static final long serialVersionUID = 1L;
     private static final int MAX_ALIVE = 90;
-    private static final int MIN_ALIVE = 0;
-    private static final int SPEED = 1;
+    private static final double MIN_ALIVE = 0.5;
+    private static final int SPEED = 0;
 
     private int frameSize;
     private int gridSize;
