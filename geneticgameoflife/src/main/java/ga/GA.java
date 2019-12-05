@@ -3,15 +3,14 @@ package ga;
 import life.Life;
 import util.Util;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Random;
+import java.io.File;
+import java.util.*;
 
 public class GA extends Canvas {
 
@@ -20,18 +19,29 @@ public class GA extends Canvas {
     private static int[] pixels;
 
     private static final int FRAME_SIZE = 500;
-    private static final int GRID_SIZE = 50;
+    private static final int GRID_SIZE = 100;
     private static final int MAX_GENERATIONS = 100;
     private static final int POPULATION_SIZE = 100;
-    private static final double MUTATION = 0.01;
-    private static final int INITIAL_FACTOR = 5;
+    private static final double MUTATION_COEFFICIENT = 0.01;
+    private static final double MUTATION_FACTOR = 20;
+    private static final int INITIAL_FACTOR = 10;
     private static JFrame frame;
 
     private static Population population;
     private static ArrayList<DNA> nextGenPool;
     private static int generation = 0;
     private static boolean[] fittestPattern;
-    private static int overallMaxFitness;
+    private static double overallMaxFitness;
+    private static Comparator<DNA> dnaComparator = new Comparator<DNA>() {
+        public int compare(DNA o1, DNA o2) {
+            if(o2.getFitness() > o1.getFitness()) {
+                return 1;
+            } else if(o2.getFitness() < o1.getFitness()) {
+                return -1;
+            }
+            return 0;
+        }
+    };
 
     public GA() {
         Dimension d = new Dimension(FRAME_SIZE, FRAME_SIZE);
@@ -46,12 +56,15 @@ public class GA extends Canvas {
 
     public static void main(String arg[]) {
         GA ga = new GA();
+        Life.MIN_ALIVE = 5;
+        Life.MAX_ALIVE = 95;
+        Life.SPEED = 0;
         showFittestPattern(ga);
         setInitialPopulation();
         while (generation < MAX_GENERATIONS) {
             evaluatePopulation();
-            createNextGenPool(ga);
-            createNextGenerationPopulation();
+//            createNextGenPool(ga);
+            createNextGenerationPopulation(ga);
         }
     }
 
@@ -65,14 +78,32 @@ public class GA extends Canvas {
         frame.pack();
     }
 
-    private static void createNextGenerationPopulation() {
-        population = new Population();
-        for (int i = 0; i < POPULATION_SIZE; i++) {
-            int randomNumber = random.nextInt(nextGenPool.size());
-            DNA dna = nextGenPool.get(randomNumber);
-            mutateDNA(dna);
-            population.add(dna);
+    private static void createNextGenerationPopulation(GA ga) {
+        Collections.sort(population.getPool(), dnaComparator);
+        System.out.println("GENERATION: " + generation + " MAX FITNESS: " + getMaxFitness(ga));
+        Population tempPop = new Population();
+        for (int i = 0; i < POPULATION_SIZE / 2; i++) {
+            DNA currentDNA = population.getPool().get(i);
+            DNA dna1 = new DNA(GRID_SIZE);
+            dna1.setGrid(currentDNA.getGrid());
+            DNA dna2 = new DNA(GRID_SIZE);
+            dna2.setGrid(currentDNA.getGrid());
+            mutateDNA(dna1);
+            mutateDNA(dna2);
+            tempPop.add(dna1);
+            tempPop.add(dna2);
         }
+        population = tempPop;
+//        System.out.println("POP SIZE: " + population.getPool().size());
+
+//        population = new Population();
+//        for (int i = 0; i < POPULATION_SIZE; i++) {
+//            int randomNumber = random.nextInt(nextGenPool.size());
+//            DNA dna = nextGenPool.get(randomNumber);
+//            mutateDNA(dna);
+//            population.add(dna);
+//        }
+
 
     }
 
@@ -116,9 +147,9 @@ public class GA extends Canvas {
     private static void createNextGenPool(GA ga) {
         nextGenPool = new ArrayList<DNA>();
         HashMap<DNA, Integer> probs = new HashMap<DNA, Integer>();
-        int maxFitness = getMaxFitness(ga);
+        double maxFitness = getMaxFitness(ga);
         for (DNA dna : population.getPool()) {
-            int fitness = dna.getFitness();
+            double fitness = dna.getFitness();
             double ratio = (double) fitness / maxFitness;
             int prob = (int) (ratio * 100);
             probs.put(dna, prob);
@@ -137,8 +168,8 @@ public class GA extends Canvas {
         System.out.println("GENERATION: " + generation + " MAX FITNESS: " + getMaxFitness(ga));
     }
 
-    private static int getMaxFitness(GA ga) {
-        int maxFitness = 0;
+    private static double getMaxFitness(GA ga) {
+        double maxFitness = 0;
         for (DNA dna : population.getPool()) {
             if (dna.getFitness() > maxFitness) {
                 maxFitness = dna.getFitness();
@@ -167,7 +198,11 @@ public class GA extends Canvas {
         for (int i = 0; i < pixels.length; i++) {
             pixels[i] = fittestPattern[i] ? 0xffffff : 0;
         }
-
+        try {
+            File outputfile = new File("image.bmp");
+            ImageIO.write(image, "bmp", outputfile);
+        } catch (Exception e) {
+        }
         g.drawImage(image, 0, 0, FRAME_SIZE, FRAME_SIZE, null);
         g.dispose();
         bs.show();
@@ -182,21 +217,26 @@ public class GA extends Canvas {
     }
 
     private static void mutateDNA(DNA dna) {
-        int initialPatternGridSize = GRID_SIZE / INITIAL_FACTOR;
-        boolean tempOneD[] = new boolean[GRID_SIZE * GRID_SIZE];
-        boolean tempTwoD[][] = new boolean[GRID_SIZE][GRID_SIZE];
-        Util.convert1Dto2D(dna.getGrid(), tempTwoD);
-        int min = GRID_SIZE / 2 - initialPatternGridSize / 2;
-        int max = GRID_SIZE / 2 - initialPatternGridSize / 2 + initialPatternGridSize;
-        int totalCells = initialPatternGridSize * initialPatternGridSize;
-        int numberOfCellChange = (int) (MUTATION * totalCells);
-        for (int k = 0; k < numberOfCellChange; k++) {
-            int i = random.nextInt((max - min) + 1) + min;
-            int j = random.nextInt((max - min) + 1) + min;
-            tempTwoD[i][j] = !tempTwoD[i][j];
+        boolean shouldMutate = false;
+        int randomNumber = random.nextInt(100);
+        shouldMutate = randomNumber < MUTATION_FACTOR;
+        if (shouldMutate) {
+            int initialPatternGridSize = GRID_SIZE / INITIAL_FACTOR;
+            boolean tempOneD[] = new boolean[GRID_SIZE * GRID_SIZE];
+            boolean tempTwoD[][] = new boolean[GRID_SIZE][GRID_SIZE];
+            Util.convert1Dto2D(dna.getGrid(), tempTwoD);
+            int min = GRID_SIZE / 2 - initialPatternGridSize / 2;
+            int max = GRID_SIZE / 2 - initialPatternGridSize / 2 + initialPatternGridSize;
+            int totalCells = initialPatternGridSize * initialPatternGridSize;
+            int numberOfCellChange = (int) (MUTATION_COEFFICIENT * totalCells);
+            for (int k = 0; k < numberOfCellChange; k++) {
+                int i = random.nextInt((max - min) + 1) + min;
+                int j = random.nextInt((max - min) + 1) + min;
+                tempTwoD[i][j] = !tempTwoD[i][j];
+            }
+            Util.convert2Dto1D(tempTwoD, tempOneD);
+            dna.setGrid(tempOneD);
         }
-        Util.convert2Dto1D(tempTwoD, tempOneD);
-        dna.setGrid(tempOneD);
     }
 
 

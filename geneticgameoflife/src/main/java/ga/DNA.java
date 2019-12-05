@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class DNA {
     private boolean[] grid;
     private boolean[] finalGrid;
-    private int fitness;
+    private double fitness;
 
     public DNA(int gridSize) {
         grid = new boolean[gridSize];
@@ -20,11 +20,11 @@ public class DNA {
         this.grid = Arrays.copyOf(grid, grid.length);
     }
 
-    public int getFitness() {
+    public double getFitness() {
         return fitness;
     }
 
-    public void setFitness(int fitness) {
+    public void setFitness(double fitness) {
         this.fitness = fitness;
     }
 

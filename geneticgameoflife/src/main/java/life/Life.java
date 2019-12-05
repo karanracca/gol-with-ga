@@ -15,9 +15,9 @@ import java.util.Random;
 public class Life extends Canvas {
 
     private static final long serialVersionUID = 1L;
-    private static final int MAX_ALIVE = 90;
-    private static final double MIN_ALIVE = 0.5;
-    private static final int SPEED = 0;
+    public static int MAX_ALIVE = 60;
+    public static double MIN_ALIVE = 10;
+    public static int SPEED = 0;
 
     private int frameSize;
     private int gridSize;
@@ -34,6 +34,9 @@ public class Life extends Canvas {
     private ArrayList history;
     private JFrame frame;
 
+    private ArrayList<Double> averageLifeList;
+    private double averageLife;
+
     public Life(int frameSize, int gridSize) {
         Dimension d = new Dimension(frameSize, frameSize);
         setMinimumSize(d);
@@ -42,6 +45,7 @@ public class Life extends Canvas {
         this.frameSize = frameSize;
         this.gridSize = gridSize;
         frame = new JFrame();
+        averageLifeList = new ArrayList<Double>();
     }
 
     private void initiateGame() {
@@ -71,7 +75,7 @@ public class Life extends Canvas {
         while (continueGame) {
             update();
             try {
-                if(generation == 1) {
+                if (generation == 1) {
 //                    Thread.sleep(1000);
                 } else {
                     Thread.sleep(SPEED);
@@ -129,6 +133,8 @@ public class Life extends Canvas {
         bs.show();
         generation++;
         livingCells += getLiveCellCount();
+        double percentLive = ((double) getLiveCellCount() / pixels.length) * 100;
+        frame.setTitle("Generation: " + generation + " Live cells: " + percentLive + "%");
 
         history.add(Arrays.copyOf(cGrid, cGrid.length));
     }
@@ -137,7 +143,7 @@ public class Life extends Canvas {
         double fitness;
         this.initiateGame();
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
         frame.setTitle(title);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
@@ -146,8 +152,9 @@ public class Life extends Canvas {
         frame.add(this);
         frame.pack();
         this.start(dna);
-        fitness = (double)livingCells / generation;
-        dna.setFitness((int)fitness);
+//        fitness = (double) livingCells / generation;
+        fitness = averageLife;
+        dna.setFitness(fitness);
     }
 
 
@@ -169,9 +176,10 @@ public class Life extends Canvas {
     private void checkGenerationGrowth() {
         boolean match[];
         boolean contains = false;
+        int totalLiveCells = getLiveCellCount();
+        double percentAlive = (((double) totalLiveCells) / (gridSize * gridSize)) * 100;
+        calculateAverageLife(percentAlive);
         if (generation > 10) {
-            int totalLiveCells = getLiveCellCount();
-            double percentAlive = (((double) totalLiveCells) / (gridSize * gridSize)) * 100;
             if (percentAlive > MAX_ALIVE || percentAlive < MIN_ALIVE) {
 //                System.out.println("Terminated due to population problem: " + percentAlive + "%");
                 this.continueGame = false;
@@ -199,6 +207,18 @@ public class Life extends Canvas {
             if (b) count++;
         }
         return count;
+    }
+
+    private void calculateAverageLife(double percentAlive) {
+        averageLifeList.add(percentAlive);
+        double sum = 0;
+        for (Double d : averageLifeList) {
+            sum += d;
+        }
+//        System.out.println(averageLife);
+
+        averageLife = sum / averageLifeList.size();
+
     }
 
     public JFrame getFrame() {
