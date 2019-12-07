@@ -1,13 +1,13 @@
 package ga;
 
+import library.Library;
 import util.Util;
 
 import java.util.*;
 
 public class Population {
 
-
-    private static final int INITIAL_FACTOR = 10;
+    private static final int INITIAL_FACTOR = Library.INITIAL_FACTOR;
     private ArrayList<DNA> pool;
     private int gridSize;
     private static Random random = new Random();
@@ -18,7 +18,8 @@ public class Population {
         setInitialPopulation(size, gridSize);
     }
 
-    public Population() {
+    public Population(int gridSize) {
+        this.gridSize = gridSize;
         this.pool = new ArrayList<DNA>();
     }
 
@@ -43,6 +44,14 @@ public class Population {
         Util.convert2Dto1D(twoDRandomPattern, randomPattern);
         return randomPattern;
 
+    }
+
+    public void fill (int size) {
+        for (int i = this.pool.size(); i < size; i++) {
+            DNA dna = new DNA(this.gridSize);
+            dna.setGrid(generateRandomInitialPattern());
+            this.pool.add(dna);
+        }
     }
 
     private static Comparator<DNA> dnaComparator = new Comparator<DNA>() {

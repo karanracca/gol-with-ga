@@ -7,7 +7,6 @@ import ui.UI;
 import ga.Population;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.File;
@@ -19,9 +18,6 @@ public class Runner {
     private static final int FRAME_SIZE = 500;
     private static final int GRID_SIZE = 100;
     private static final int POPULATION_SIZE = 100;
-    private static BufferedImage image;
-    private static int[] pixels;
-    private static JFrame frame;
 
     public static void checkGrowth() {
         Life.MAX_ALIVE = 90;

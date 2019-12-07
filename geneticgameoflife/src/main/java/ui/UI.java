@@ -1,6 +1,5 @@
 package ui;
 
-import ga.GA;
 import ga.DNA;
 
 import javax.imageio.ImageIO;
@@ -15,26 +14,25 @@ import java.util.Arrays;
 public class UI extends Canvas {
 
     private int frameSize;
-    private static int gridSize = 100;
-    private static BufferedImage image;
-    private static int[] pixels;
-    private static JFrame frame;
+    private int gridSize;
+    private BufferedImage image;
+    private int[] pixels;
+    private JFrame frame;
     private Dimension dimension;
 
     public UI (int frameSize, int gridSize) {
         this.frameSize = frameSize;
         this.gridSize = gridSize;
-
-        dimension = new Dimension(this.frameSize, this.frameSize);
-        setMinimumSize(dimension);
-        setMaximumSize(dimension);
-        setPreferredSize(dimension);
+        this.dimension = new Dimension(this.frameSize, this.frameSize);
+        setMinimumSize(this.dimension);
+        setMaximumSize(this.dimension);
+        setPreferredSize(this.dimension);
         frame = new JFrame();
         image = new BufferedImage(this.gridSize, this.gridSize, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
     }
 
-    public void showFittestPattern(GA ga) {
+    public void showFittestPattern() {
         frame.setTitle("Fittest");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
@@ -54,7 +52,6 @@ public class UI extends Canvas {
         BufferStrategy bs = getBufferStrategy();
         if (null == bs) {
             createBufferStrategy(3);
-            //render(fittestPattern, overallMaxFitness);
             return;
         }
         Graphics g = bs.getDrawGraphics();
@@ -68,6 +65,7 @@ public class UI extends Canvas {
             File outputfile = new File("image.bmp");
             ImageIO.write(image, "bmp", outputfile);
         } catch (Exception e) {
+            System.out.println("Unable to save Fittest pattern image file.");
         }
         g.drawImage(image, 0, 0, this.frameSize, this.frameSize, null);
         g.dispose();
