@@ -178,6 +178,7 @@ public class Life extends Canvas {
         boolean contains = false;
         int totalLiveCells = getLiveCellCount();
         double percentAlive = (((double) totalLiveCells) / (gridSize * gridSize)) * 100;
+        //System.out.println("Percentage Alive" + percentAlive + "%");
         calculateAverageLife(percentAlive);
         if (generation > 10) {
             if (percentAlive > MAX_ALIVE || percentAlive < MIN_ALIVE) {

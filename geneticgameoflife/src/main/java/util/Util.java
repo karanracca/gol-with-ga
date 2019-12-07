@@ -2,7 +2,6 @@ package util;
 
 public class Util {
 
-
     public static void convert1Dto2D(boolean oneD[], boolean twoD[][]) {
         int index = 0;
         for (int i = 0; i < twoD.length; i++) {
