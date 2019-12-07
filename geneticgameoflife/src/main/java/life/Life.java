@@ -1,65 +1,57 @@
 package life;
 
 import ga.DNA;
+import ui.UI;
+import library.Library;
 import util.Util;
-
-import javax.swing.*;
+import javax.swing.JFrame;
 import java.awt.*;
-import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
 public class Life extends Canvas {
 
-    private static final long serialVersionUID = 1L;
-    public static int MAX_ALIVE = 60;
-    public static double MIN_ALIVE = 10;
-    public static int SPEED = 0;
+    private static Random random = new Random();
+    //private static final long serialVersionUID = 1L;
+    public static int MAX_ALIVE = Library.MAX_ALIVE;
+    public static double MIN_ALIVE = Library.MIN_ALIVE;
+    public static int SPEED = Library.SPEED;
 
     private int frameSize;
     private int gridSize;
-    public static String title = "Game Of Life";
-
-    private static Random random = new Random();
-    private BufferedImage image;
-    private int[] pixels;
     private boolean[] cGrid;
     private boolean[] pGrid;
     private int generation;
-    private int livingCells;
     private boolean continueGame;
     private ArrayList history;
-    private JFrame frame;
-
     private ArrayList<Double> averageLifeList;
     private double averageLife;
 
-    public Life(int frameSize, int gridSize) {
-        Dimension d = new Dimension(frameSize, frameSize);
-        setMinimumSize(d);
-        setMaximumSize(d);
-        setPreferredSize(d);
-        this.frameSize = frameSize;
-        this.gridSize = gridSize;
-        frame = new JFrame();
-        averageLifeList = new ArrayList<Double>();
-    }
+    private UI ui;
 
-    private void initiateGame() {
+    public Life(int frameSize, int gridSize) {
+        this.ui = new UI(frameSize, gridSize);
+        this.gridSize = gridSize;
+        this.frameSize = frameSize;
         this.generation = 0;
-        this.livingCells = 0;
         this.continueGame = true;
         history = new ArrayList<boolean[]>();
-        image = new BufferedImage(gridSize, gridSize, BufferedImage.TYPE_INT_RGB);
-        pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+        averageLifeList = new ArrayList<Double>();
+
     }
 
-    public void start(DNA dna) {
-        cGrid = new boolean[pixels.length];
-        pGrid = new boolean[pixels.length];
+    public void startGame(DNA dna) {
+        this.ui.showGOL();
+        double fitness;
+        this.start(dna);
+        fitness = averageLife;
+        dna.setFitness(fitness);
+    }
+
+    private void start(DNA dna) {
+        cGrid = new boolean[this.ui.getPixelsLength()];
+        pGrid = new boolean[this.ui.getPixelsLength()];
         if (null == dna) {
             for (int i = 0; i < cGrid.length; i++) {
                 cGrid[i] = random.nextInt(100) / 100.0 > 0.8;
@@ -75,19 +67,13 @@ public class Life extends Canvas {
         while (continueGame) {
             update();
             try {
-                if (generation == 1) {
-//                    Thread.sleep(1000);
-                } else {
-                    Thread.sleep(SPEED);
-                }
+                Thread.sleep(SPEED);
             } catch (Exception e) {
-
+                System.out.println("Thread sleep exception");
             }
             render();
         }
-
         return cGrid;
-//        System.out.println("Last Generation: " + generation);
     }
 
     public void update() {
@@ -97,7 +83,6 @@ public class Life extends Canvas {
         for (int i = 0; i < gridSize; i++) {
             for (int j = 0; j < gridSize; j++) {
                 boolean state = tempcGrid[i][j];
-
                 int neighbors = countNeighbors(tempcGrid, i, j);
                 if (state == false && neighbors == 3) {
                     temppGrid[i][j] = true;
@@ -106,7 +91,6 @@ public class Life extends Canvas {
                 } else {
                     temppGrid[i][j] = state;
                 }
-
             }
         }
         Util.convert2Dto1D(temppGrid, pGrid);
@@ -114,49 +98,13 @@ public class Life extends Canvas {
         cGrid = pGrid;
     }
 
-    public void render() {
-        BufferStrategy bs = getBufferStrategy();
-        if (null == bs) {
-            createBufferStrategy(3);
-            return;
-        }
-        Graphics g = bs.getDrawGraphics();
-        for (int i = 0; i < pixels.length; i++) {
-            pixels[i] = 0;
-        }
-        for (int i = 0; i < pixels.length; i++) {
-            pixels[i] = cGrid[i] ? 0xffffff : 0;
-        }
-
-        g.drawImage(image, 0, 0, frameSize, frameSize, null);
-        g.dispose();
-        bs.show();
+    private void render() {
+        this.ui.render(cGrid);
         generation++;
-        livingCells += getLiveCellCount();
-        double percentLive = ((double) getLiveCellCount() / pixels.length) * 100;
-        frame.setTitle("Generation: " + generation + " Live cells: " + percentLive + "%");
-
+        double percentLive = ((double) getLiveCellCount() / this.ui.getPixelsLength()) * 100;
+        //frame.setTitle("Generation: " + generation + " Live cells: " + percentLive + "%");
         history.add(Arrays.copyOf(cGrid, cGrid.length));
     }
-
-    public void startGame(DNA dna) {
-        double fitness;
-        this.initiateGame();
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
-        frame.setTitle(title);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(false);
-        frame.setVisible(true);
-
-        frame.add(this);
-        frame.pack();
-        this.start(dna);
-//        fitness = (double) livingCells / generation;
-        fitness = averageLife;
-        dna.setFitness(fitness);
-    }
-
 
     private int countNeighbors(boolean grid[][], int x, int y) {
         int sum = 0;
@@ -178,11 +126,9 @@ public class Life extends Canvas {
         boolean contains = false;
         int totalLiveCells = getLiveCellCount();
         double percentAlive = (((double) totalLiveCells) / (gridSize * gridSize)) * 100;
-        //System.out.println("Percentage Alive" + percentAlive + "%");
         calculateAverageLife(percentAlive);
         if (generation > 10) {
             if (percentAlive > MAX_ALIVE || percentAlive < MIN_ALIVE) {
-//                System.out.println("Terminated due to population problem: " + percentAlive + "%");
                 this.continueGame = false;
                 return;
             }
@@ -190,7 +136,6 @@ public class Life extends Canvas {
         for (int i = 0; i < history.size(); i++) {
             match = (boolean[]) history.get(i);
             if (Arrays.equals(cGrid, match)) {
-//                System.out.println("Terminated due to repeated pattern");
                 contains = true;
                 break;
             }
@@ -216,14 +161,11 @@ public class Life extends Canvas {
         for (Double d : averageLifeList) {
             sum += d;
         }
-//        System.out.println(averageLife);
-
         averageLife = sum / averageLifeList.size();
-
     }
 
     public JFrame getFrame() {
-        return this.frame;
+        return this.ui.getFrame();
     }
 
 }

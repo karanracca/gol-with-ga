@@ -42,6 +42,17 @@ public class UI extends Canvas {
         frame.pack();
     }
 
+    public void showGOL () {
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+        frame.setTitle("Game Of Life");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
+        frame.setVisible(true);
+        frame.add(this);
+        frame.pack();
+    }
+
     public void displayFittest (DNA fittest) {
         boolean[] fittestPattern = Arrays.copyOf(fittest.getGrid(), fittest.getGrid().length);
         this.render(fittestPattern, fittest.getFitness());
@@ -70,5 +81,35 @@ public class UI extends Canvas {
         g.drawImage(image, 0, 0, this.frameSize, this.frameSize, null);
         g.dispose();
         bs.show();
+    }
+
+    public void render(boolean[] cGrid) {
+        BufferStrategy bs = getBufferStrategy();
+        if (null == bs) {
+            createBufferStrategy(3);
+            return;
+        }
+        Graphics g = bs.getDrawGraphics();
+        for (int i = 0; i < pixels.length; i++) {
+            pixels[i] = 0;
+        }
+        for (int i = 0; i < pixels.length; i++) {
+            pixels[i] = cGrid[i] ? 0xffffff : 0;
+        }
+
+        g.drawImage(image, 0, 0, frameSize, frameSize, null);
+        g.dispose();
+        bs.show();
+        //frame.setTitle("Generation: " + generation + " Live cells: " + percentLive + "%");
+
+        //history.add(Arrays.copyOf(cGrid, cGrid.length));
+    }
+
+    public JFrame getFrame() {
+        return this.frame;
+    }
+
+    public int getPixelsLength () {
+        return this.pixels.length;
     }
 }

@@ -20,4 +20,10 @@ public class Library {
 
     public static final int INITIAL_FACTOR = 20;
 
+    public static final int MAX_ALIVE = 60;
+
+    public static final double MIN_ALIVE = 10;
+
+    public static final int SPEED = 0;
+
 }
