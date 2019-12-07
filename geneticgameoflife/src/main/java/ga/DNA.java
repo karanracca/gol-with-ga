@@ -44,13 +44,13 @@ public class DNA {
 
     public void mutateDNA(int initialFactor, double mutationCoefficient) {
         int initialPatternGridSize = this.gridSize / initialFactor;
-            boolean tempOneD[] = new boolean[this.gridSize * this.gridSize];
-            boolean tempTwoD[][] = new boolean[this.gridSize][this.gridSize];
-            Util.convert1Dto2D(this.grid, tempTwoD);
-            int min = this.gridSize / 2 - initialPatternGridSize / 2;
-            int max = this.gridSize / 2 - initialPatternGridSize / 2 + initialPatternGridSize;
-            int totalCells = initialPatternGridSize * initialPatternGridSize;
-            int numberOfCellChange = (int) (mutationCoefficient * totalCells);
+        boolean tempOneD[] = new boolean[this.gridSize * this.gridSize];
+        boolean tempTwoD[][] = new boolean[this.gridSize][this.gridSize];
+        Util.convert1Dto2D(this.grid, tempTwoD);
+        int min = this.gridSize / 2 - initialPatternGridSize / 2;
+        int max = this.gridSize / 2 - initialPatternGridSize / 2 + initialPatternGridSize;
+        int totalCells = initialPatternGridSize * initialPatternGridSize;
+        int numberOfCellChange = (int) (mutationCoefficient * totalCells);
             for (int k = 0; k < numberOfCellChange; k++) {
                 int i = random.nextInt((max - min) + 1) + min;
                 int j = random.nextInt((max - min) + 1) + min;

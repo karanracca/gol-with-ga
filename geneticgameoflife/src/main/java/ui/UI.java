@@ -19,6 +19,7 @@ public class UI extends Canvas {
     private int[] pixels;
     private JFrame frame;
     private Dimension dimension;
+    private BufferStrategy bs;
 
     public UI (int frameSize, int gridSize) {
         this.frameSize = frameSize;
@@ -40,6 +41,11 @@ public class UI extends Canvas {
         frame.setVisible(true);
         frame.add(this);
         frame.pack();
+
+        if (null == this.bs) {
+            createBufferStrategy(3);
+        }
+        this.bs = getBufferStrategy();
     }
 
     public void showGOL () {
@@ -60,12 +66,8 @@ public class UI extends Canvas {
 
     private void render(boolean[] fittestPattern, double overallMaxFitness) {
         frame.setTitle("Fittest (Fitness: " + overallMaxFitness + ")");
-        BufferStrategy bs = getBufferStrategy();
-        if (null == bs) {
-            createBufferStrategy(3);
-            return;
-        }
-        Graphics g = bs.getDrawGraphics();
+
+        Graphics g = this.bs.getDrawGraphics();
         for (int i = 0; i < pixels.length; i++) {
             pixels[i] = 0;
         }

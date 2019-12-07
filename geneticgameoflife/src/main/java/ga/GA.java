@@ -105,7 +105,7 @@ public class GA {
     }
 
     private void mutatePopulation () {
-        for (int i=0; i<this.population.getPool().size(); i++) {
+        for (int i=TOP_FITTEST_COEFFICIENT + 1; i<this.population.getPool().size(); i++) {
             int randomNumber = random.nextInt(100);
             if (randomNumber < MUTATION_FACTOR) {
                 this.population.getPool().get(i).mutateDNA(INITIAL_FACTOR, MUTATION_COEFFICIENT);

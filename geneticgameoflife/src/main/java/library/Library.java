@@ -14,13 +14,13 @@ public class Library {
 
     public static final int MAX_GENERATIONS = 100;
 
-    public static final double MUTATION_COEFFICIENT = 0.1;
+    public static final double MUTATION_COEFFICIENT = 0.2;
 
-    public static final double MUTATION_FACTOR = (int)(POPULATION_SIZE * 0.2);
+    public static final double MUTATION_FACTOR = (int)(POPULATION_SIZE * 0.4);
 
     public static final int INITIAL_FACTOR = 20;
 
-    public static final int MAX_ALIVE = 60;
+    public static final int MAX_ALIVE = 100;
 
     public static final double MIN_ALIVE = 10;
 
