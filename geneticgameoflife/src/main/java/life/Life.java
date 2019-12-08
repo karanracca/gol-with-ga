@@ -1,11 +1,15 @@
 package life;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import ga.DNA;
 import ui.UI;
 import library.Library;
 import util.Util;
+
 import javax.swing.JFrame;
 import java.awt.*;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -17,6 +21,7 @@ public class Life extends Canvas {
     public static int MAX_ALIVE = Library.MAX_ALIVE;
     public static double MIN_ALIVE = Library.MIN_ALIVE;
     public static int SPEED = Library.SPEED;
+    public static boolean CREATE_CSV = false;
 
     private int frameSize;
     private int gridSize;
@@ -27,6 +32,7 @@ public class Life extends Canvas {
     private ArrayList history;
     private ArrayList<Double> averageLifeList;
     private double averageLife;
+    private FileWriter fileWriter;
 
     private UI ui;
 
@@ -41,12 +47,19 @@ public class Life extends Canvas {
 
     }
 
-    public void startGame(DNA dna) {
+    public void startGame(DNA dna) throws IOException {
+        if (CREATE_CSV) {
+            fileWriter = new FileWriter("graph.csv");
+        }
         this.ui.showGOL();
         double fitness;
         this.start(dna);
         fitness = averageLife;
         dna.setFitness(fitness);
+        if (CREATE_CSV) {
+            fileWriter.flush();
+            fileWriter.close();
+        }
     }
 
     private void start(DNA dna) {
@@ -68,10 +81,10 @@ public class Life extends Canvas {
             update();
             try {
                 Thread.sleep(SPEED);
+                render();
             } catch (Exception e) {
                 System.out.println("Thread sleep exception");
             }
-            render();
         }
         return cGrid;
     }
@@ -98,11 +111,14 @@ public class Life extends Canvas {
         cGrid = pGrid;
     }
 
-    private void render() {
+    private void render() throws IOException {
         this.ui.render(cGrid);
         generation++;
         double percentLive = ((double) getLiveCellCount() / this.ui.getPixelsLength()) * 100;
         //frame.setTitle("Generation: " + generation + " Live cells: " + percentLive + "%");
+        if (CREATE_CSV) {
+            createCsv(generation, getLiveCellCount());
+        }
         history.add(Arrays.copyOf(cGrid, cGrid.length));
     }
 
@@ -127,7 +143,7 @@ public class Life extends Canvas {
         int totalLiveCells = getLiveCellCount();
         double percentAlive = (((double) totalLiveCells) / (gridSize * gridSize)) * 100;
         calculateAverageLife(percentAlive);
-        if (generation > 10) {
+        if (generation > 100) {
             if (percentAlive > MAX_ALIVE || percentAlive < MIN_ALIVE) {
                 this.continueGame = false;
                 return;
@@ -166,6 +182,13 @@ public class Life extends Canvas {
 
     public JFrame getFrame() {
         return this.ui.getFrame();
+    }
+
+    private void createCsv(int generation, int livingCells) throws IOException {
+        fileWriter.append(String.valueOf(generation));
+        fileWriter.append(",");
+        fileWriter.append(String.valueOf(livingCells));
+        fileWriter.append("\n");
     }
 
 }
