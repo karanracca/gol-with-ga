@@ -2,10 +2,7 @@ package ga;
 
 import life.Life;
 import ui.UI;
-
-import java.io.IOException;
 import java.util.*;
-
 import library.Library;
 
 public class GA {
@@ -19,7 +16,6 @@ public class GA {
     private static final double MUTATION_COEFFICIENT = Library.MUTATION_COEFFICIENT;
     private static final double MUTATION_FACTOR = Library.MUTATION_FACTOR;
     private static final int INITIAL_FACTOR = Library.INITIAL_FACTOR;
-    private static DNA fittestDNA;
 
     private UI ui;
     private Population population;
@@ -28,14 +24,14 @@ public class GA {
 
     private static Random random = new Random();
 
-    public GA(UI ui, Population population) throws IOException{
+    public GA (UI ui, Population population) {
         this.ui = ui;
         this.population = population;
         ui.showFittestPattern();
         this.run();
     }
 
-    private void run() throws IOException{
+    private void run () {
         while (generation < MAX_GENERATIONS) {
             evaluatePopulation(this.population);
 
@@ -43,11 +39,8 @@ public class GA {
             DNA fittest = this.population.getFittestDNA();
             if (fittest.getFitness() > overallMaxFitness) {
                 overallMaxFitness = fittest.getFitness();
-                fittestDNA = new DNA(GRID_SIZE);
-                fittestDNA.setGrid(fittest.getGrid());
-                fittestDNA.setFitness(fittest.getFitness());
+                ui.displayFittest(fittest);
             }
-            ui.displayFittest(fittestDNA);
 
             createNextGenerationPopulation();
 
@@ -55,7 +48,7 @@ public class GA {
         }
     }
 
-    private static void evaluatePopulation(Population population) throws IOException {
+    private static void evaluatePopulation(Population population) {
         for (int i = 0; i < population.getPool().size(); i++) {
             DNA dna = population.getPool().get(i);
             Life life = new Life(FRAME_SIZE, GRID_SIZE);
@@ -77,7 +70,7 @@ public class GA {
 
         HashMap<DNA, Integer> probs = new HashMap<DNA, Integer>();
         double maxFitness = this.population.getMaxFitness();
-        for (int i = TOP_FITTEST_COEFFICIENT + 1; i <= this.population.getPool().size() - LEAST_FITTEST_COEFFICIENT; i++) {
+        for (int i=TOP_FITTEST_COEFFICIENT + 1; i <= this.population.getPool().size() - LEAST_FITTEST_COEFFICIENT; i++) {
             DNA dna = this.population.getPool().get(i);
             double fitness = dna.getFitness();
             double ratio = fitness / maxFitness;
@@ -86,7 +79,7 @@ public class GA {
         }
         int nextGenPoolSize = calculateNextGenSize(probs);
 
-        for (int i = TOP_FITTEST_COEFFICIENT + 1; i <= this.population.getPool().size() - LEAST_FITTEST_COEFFICIENT; i++) {
+        for (int i=TOP_FITTEST_COEFFICIENT + 1; i <= this.population.getPool().size() - LEAST_FITTEST_COEFFICIENT; i++) {
             DNA dna = this.population.getPool().get(i);
             int prob = probs.get(dna);
             double ratio = (double) prob / nextGenPoolSize;
@@ -111,8 +104,8 @@ public class GA {
         return sum;
     }
 
-    private void mutatePopulation() {
-        for (int i = TOP_FITTEST_COEFFICIENT + 1; i < this.population.getPool().size(); i++) {
+    private void mutatePopulation () {
+        for (int i=TOP_FITTEST_COEFFICIENT + 1; i<this.population.getPool().size(); i++) {
             int randomNumber = random.nextInt(100);
             if (randomNumber < MUTATION_FACTOR) {
                 this.population.getPool().get(i).mutateDNA(INITIAL_FACTOR, MUTATION_COEFFICIENT);

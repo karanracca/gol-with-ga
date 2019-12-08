@@ -18,7 +18,7 @@ public class Library {
 
     public static final double MUTATION_FACTOR = (int)(POPULATION_SIZE * 0.4);
 
-    public static final int INITIAL_FACTOR = 15;
+    public static final int INITIAL_FACTOR = 20;
 
     public static final int MAX_ALIVE = 100;
 
