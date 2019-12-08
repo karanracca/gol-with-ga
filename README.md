@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | Shubhankar Dandekar | 001439467| dandekar.s@husky.neu.edu |
 | Karan Racca | 001842476  | racca.k@husky.neu.edu|
-| Urvashi Jain | 1089739 | jain.ur@husky.neu.edu|
+| Urvashi Jain | 001089739 | jain.ur@husky.neu.edu|
 
 ## Topics
 - Objective
